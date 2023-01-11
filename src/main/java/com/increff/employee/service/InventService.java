@@ -8,7 +8,7 @@ import com.increff.employee.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,12 +19,11 @@ public class InventService {
 	private InventDao dao;
 	@Autowired
 	private ProductDao proDao;
-	@Transactional(rollbackOn = ApiException.class)
+	@Transactional(rollbackFor = ApiException.class)
 	public void add(InventPojo p) throws ApiException {
 		if(p.getQuantity() == 0) {
 			throw new ApiException("quantity cannot be empty");
 		}
-
 		ProductPojo productPojo =  proDao.selectByBarcode(p.getBarcode());
 		if(Objects.isNull(productPojo)){
 			throw new ApiException("Product with given barcode doesnt exists");
@@ -32,30 +31,31 @@ public class InventService {
 		p.setId(productPojo.getId());
 		dao.insert(p);
 	}
-//TODO we are not able to insert an entry in the inventory table the problem might be in productdao,inventservice
-	@Transactional
+	//TODO: if quantity turns 0 then delete that entry automatically
+	//TODO: if we add an already existing product into the inventory than it adds new and old quantity
+	@Transactional(readOnly = true)
 	public void delete(int id) {
 		dao.delete(id);
 	}
 
-	@Transactional(rollbackOn = ApiException.class)
+	@Transactional(rollbackFor = ApiException.class)
 	public InventPojo get(int id) throws ApiException {
 		return getCheck(id);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<InventPojo> getAll() {
 		return dao.selectAll();
 	}
 
-	@Transactional(rollbackOn  = ApiException.class)
+	@Transactional(rollbackFor = ApiException.class)
 	public void update(int id, InventPojo p) throws ApiException {
 		InventPojo ex = getCheck(id);
 		ex.setQuantity(p.getQuantity());
 		dao.update(ex);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public InventPojo getCheck(int id) throws ApiException {
 		InventPojo p = dao.select(id);
 		if (Objects.isNull(p)) {

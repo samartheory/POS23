@@ -20,7 +20,6 @@ public class OrderDtoHelper {
         }
         return list2;
     }
-//TODO make convert helper function
     public static OrderData convert(OrderPojo p) {
         OrderData orderData = new OrderData();
         orderData.setId(p.getId());

@@ -21,15 +21,13 @@ public class BrandService {
 		if(StringUtil.isEmpty(p.getBrand()) || StringUtil.isEmpty(p.getCategory())) {
 			throw new ApiException("brand or categories cannot be empty");
 		}
-		checkUnique(p);
 		normalize(p);
-
-		System.out.println(p.getId() + p.getBrand() + p.getCategory());
+		checkUnique(p);
 
 		dao.insert(p);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public void delete(int id) {
 		dao.delete(id);
 	}
@@ -39,7 +37,7 @@ public class BrandService {
 		return getCheck(id);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<BrandPojo> getAll() {
 		return dao.selectAll();
 	}
@@ -49,15 +47,15 @@ public class BrandService {
 		if(StringUtil.isEmpty(p.getBrand()) || StringUtil.isEmpty(p.getCategory())) {
 			throw new ApiException("brand or categories cannot be empty");
 		}
-		checkUnique(p);
 		normalize(p);
+		checkUnique(p);
 		BrandPojo ex = getCheck(id);
 		ex.setCategory(p.getCategory());
 		ex.setBrand(p.getBrand());
 		dao.update(ex);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public BrandPojo getCheck(int id) throws ApiException {
 		BrandPojo p = dao.select(id);
 		if (Objects.isNull(p)) {
@@ -70,11 +68,8 @@ public class BrandService {
 		p.setCategory(StringUtil.toLowerCase(p.getCategory()));
 		p.setBrand(StringUtil.toLowerCase(p.getBrand()));
 	}
-	public BrandPojo selectByBrandCategory(String brand, String category) {
-		return dao.selectByBrandCategory(brand, category);
-	}
 	private void checkUnique(BrandPojo brandPojo) throws ApiException {
-		if (!Objects.isNull(selectByBrandCategory(brandPojo.getBrand(), brandPojo.getCategory()))) {
+		if (!Objects.isNull(dao.selectByBrandCategory(brandPojo.getBrand(), brandPojo.getCategory()))) {
 			throw new ApiException(brandPojo.getBrand() + " - " + brandPojo.getCategory() + " pair already exists");
 		}
 	}

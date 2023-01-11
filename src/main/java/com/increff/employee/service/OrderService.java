@@ -6,7 +6,7 @@ import com.increff.employee.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,7 +19,7 @@ public class OrderService {
 	@Autowired
 	private OrderDao dao;
 
-	@Transactional(rollbackOn = ApiException.class)
+	@Transactional(rollbackFor = ApiException.class)
 	public void add(OrderPojo p) throws ApiException {
 
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
@@ -33,29 +33,29 @@ public class OrderService {
 
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = ApiException.class)
 	public void delete(int id) {
 		dao.delete(id);
 	}
 
-	@Transactional(rollbackOn = ApiException.class)
+	@Transactional(rollbackFor = ApiException.class)
 	public OrderPojo get(int id) throws ApiException {
 		return getCheck(id);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<OrderPojo> getAll() {
 		return dao.selectAll();
 	}
 
-	@Transactional(rollbackOn  = ApiException.class)
+	@Transactional(rollbackFor = ApiException.class)
 	public void update(int id, OrderPojo p) throws ApiException {
 //		normalize(p);
 		OrderPojo ex = getCheck(id);
 		dao.update(ex);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public OrderPojo getCheck(int id) throws ApiException {
 		OrderPojo p = dao.select(id);
 		if (Objects.isNull(p)) {

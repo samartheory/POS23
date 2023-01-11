@@ -1,15 +1,15 @@
 
-function getInventoryUrl(){
+function getProductUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/invent";
+	return baseUrl + "/api/product";
 }
 
 //BUTTON ACTIONS
-function addInventory(event){
+function addProduct(event){
 	//Set the values to update
-	var $form = $("#inventory-form");
+	var $form = $("#product-form");
 	var json = toJson($form);
-	var url = getInventoryUrl();
+	var url = getProductUrl();
 
 	$.ajax({
 	   url: url,
@@ -19,7 +19,7 @@ function addInventory(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
-	   		getInventoryList();
+	   		getProductList();  
 	   },
 	   error: handleAjaxError
 	});
@@ -27,14 +27,14 @@ function addInventory(event){
 	return false;
 }
 
-function updateInventory(event){
-	$('#edit-inventory-modal').modal('toggle');
+function updateProduct(event){
+	$('#edit-product-modal').modal('toggle');
 	//Get the ID
-	var id = $("#inventory-edit-form input[name=id]").val();
-	var url = getInventoryUrl() + "/" + id;
+	var id = $("#product-edit-form input[name=id]").val();	
+	var url = getProductUrl() + "/" + id;
 
 	//Set the values to update
-	var $form = $("#inventory-edit-form");
+	var $form = $("#product-edit-form");
 	var json = toJson($form);
 
 	$.ajax({
@@ -45,7 +45,7 @@ function updateInventory(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
-	   		getInventoryList();
+	   		getProductList();
 	   },
 	   error: handleAjaxError
 	});
@@ -54,26 +54,26 @@ function updateInventory(event){
 }
 
 
-function getInventoryList(){
-	var url = getInventoryUrl();
+function getProductList(){
+	var url = getProductUrl();
 	$.ajax({
 	   url: url,
 	   type: 'GET',
 	   success: function(data) {
-	   		displayInventoryList(data);
+	   		displayProductList(data);  
 	   },
 	   error: handleAjaxError
 	});
 }
 
-function deleteInventory(id){
-	var url = getInventoryUrl() + "/" + id;
+function deleteProduct(id){
+	var url = getProductUrl() + "/" + id;
 
 	$.ajax({
 	   url: url,
 	   type: 'DELETE',
 	   success: function(data) {
-	   		getInventoryList();
+	   		getProductList();  
 	   },
 	   error: handleAjaxError
 	});
@@ -86,7 +86,7 @@ var processCount = 0;
 
 
 function processData(){
-	var file = $('#inventoryFile')[0].files[0];
+	var file = $('#productFile')[0].files[0];
 	readFileData(file, readFileDataCallback);
 }
 
@@ -108,7 +108,7 @@ function uploadRows(){
 	processCount++;
 	
 	var json = JSON.stringify(row);
-	var url = getInventoryUrl();
+	var url = getProductUrl();
     console.log(json);
 	//Make ajax call
 	$.ajax({
@@ -136,29 +136,35 @@ function downloadErrors(){
 
 //UI DISPLAY METHODS
 
-function displayInventoryList(data){
-	var $tbody = $('#inventory-table').find('tbody');
+function displayProductList(data){
+	var $tbody = $('#product-table').find('tbody');
 	$tbody.empty();
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = '<button onclick="deleteInventory(' + e.id + ')">delete</button>'
-		buttonHtml += ' <button onclick="displayEditInventory(' + e.id + ')">edit</button>'
+		console.log(e.brand);
+		console.log("e.brand");
+		var buttonHtml = '<button onclick="deleteProduct(' + e.id + ')">delete</button>'
+		buttonHtml += ' <button onclick="displayEditProduct(' + e.id + ')">edit</button>'
 		var row = '<tr>'
 		+ '<td>' + e.id + '</td>'
-		+ '<td>' + e.quantity + '</td>'
+		+ '<td>' + e.barcode + '</td>'
+		+ '<td>'  + e.brand + '</td>'
+		+ '<td>'  + e.category + '</td>'
+		+ '<td>'  + e.name + '</td>'
+		+ '<td>'  + e.mrp + '</td>'
 		+ '<td>' + buttonHtml + '</td>'
 		+ '</tr>';
         $tbody.append(row);
 	}
 }
 
-function displayEditInventory(id){
-	var url = getInventoryUrl() + "/" + id;
+function displayEditProduct(id){
+	var url = getProductUrl() + "/" + id;
 	$.ajax({
 	   url: url,
 	   type: 'GET',
 	   success: function(data) {
-	   		displayInventory(data);
+	   		displayProduct(data);   
 	   },
 	   error: handleAjaxError
 	});	
@@ -166,9 +172,9 @@ function displayEditInventory(id){
 
 function resetUploadDialog(){
 	//Reset file name
-	var $file = $('#inventoryFile');
+	var $file = $('#productFile');
 	$file.val('');
-	$('#inventoryFileName').html("Choose File");
+	$('#ProductFileName').html("Choose File");
 	//Reset various counts
 	processCount = 0;
 	fileData = [];
@@ -184,34 +190,38 @@ function updateUploadDialog(){
 }
 
 function updateFileName(){
-	var $file = $('#inventoryFile');
+	var $file = $('#productFile');
 	var fileName = $file.val();
-	$('#inventoryFileName').html(fileName);
+	$('#ProductFileName').html(fileName);
 }
 
 function displayUploadData(){
  	resetUploadDialog(); 	
-	$('#upload-inventory-modal').modal('toggle');
+	$('#upload-product-modal').modal('toggle');
 }
 
-function displayInventory(data){
-	$("#inventory-edit-form input[name=quantity]").val(data.quantity);
-	$("#inventory-edit-form input[name=id]").val(data.id);
-	$('#edit-inventory-modal').modal('toggle');
+function displayProduct(data){
+	$("#product-edit-form input[name=barcode]").val(data.barcode);
+	$("#product-edit-form input[name=brand]").val(data.brand);
+	$("#product-edit-form input[name=category]").val(data.category);
+	$("#product-edit-form input[name=name]").val(data.name);
+	$("#product-edit-form input[name=mrp]").val(data.mrp);
+	$("#product-edit-form input[name=id]").val(data.id);
+	$('#edit-product-modal').modal('toggle');
 }
 
 
 //INITIALIZATION CODE
 function init(){
-	$('#add-inventory').click(addInventory);
-	$('#update-inventory').click(updateInventory);
-	$('#refresh-data').click(getInventoryList);
+	$('#add-product').click(addProduct);
+	$('#update-product').click(updateProduct);
+	$('#refresh-data').click(getProductList);
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);
 	$('#download-errors').click(downloadErrors);
-    $('#inventoryFile').on('change', updateFileName)
+    $('#productFile').on('change', updateFileName)
 }
 
 $(document).ready(init);
-$(document).ready(getInventoryList);
+$(document).ready(getProductList);
 

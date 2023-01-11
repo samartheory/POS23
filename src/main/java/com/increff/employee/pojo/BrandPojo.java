@@ -4,7 +4,6 @@ import javax.persistence.*;
 @Table(uniqueConstraints = { @UniqueConstraint(name = "brandandCat", columnNames = { "brand", "category" }) })
 @Entity
 public class BrandPojo {
-
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
