@@ -23,7 +23,6 @@ public class BrandService {
 		}
 		normalize(p);
 		checkUnique(p);
-
 		dao.insert(p);
 	}
 
@@ -54,7 +53,13 @@ public class BrandService {
 		ex.setBrand(p.getBrand());
 		dao.update(ex);
 	}
-
+	public int getBrandAndCatId(String brand,String category) throws ApiException {
+		BrandPojo brandPojo = dao.selectByBrandCategory(brand,category);
+		if(Objects.isNull(brandPojo)){
+			throw new ApiException("Brand or Category dosen't exist");
+		}
+		return brandPojo.getId();
+	}
 	@Transactional(readOnly = true)
 	public BrandPojo getCheck(int id) throws ApiException {
 		BrandPojo p = dao.select(id);
@@ -63,7 +68,6 @@ public class BrandService {
 		}
 		return p;
 	}
-
 	private void normalize(BrandPojo p) {
 		p.setCategory(StringUtil.toLowerCase(p.getCategory()));
 		p.setBrand(StringUtil.toLowerCase(p.getBrand()));

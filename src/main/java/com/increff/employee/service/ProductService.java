@@ -21,15 +21,11 @@ public class ProductService {
 	private BrandDao brandDao;
 	@Transactional
 	public void add(ProductPojo p) throws ApiException {
-		if(StringUtil.isEmpty(p.getBrand()) || StringUtil.isEmpty(p.getName()) || StringUtil.isEmpty(p.getCategory())) {
+		if(StringUtil.isEmpty(p.getBarcode()) || StringUtil.isEmpty(p.getName())) {
 			throw new ApiException("Brand/Name/Category cannot be empty");
 		}
 		normalize(p);
 //		System.out.println(p.getId() + p.getBrand() + p.getCategory());
-		BrandPojo brandPojo = brandDao.selectByBrandCategory(p.getBrand(), p.getCategory());
-		if(Objects.isNull(brandPojo)){
-			throw new ApiException("Brand or Category doesn't exists");
-		}
 		checkByBarcode(p.getBarcode());
 		dao.insert(p);
 	}
@@ -61,8 +57,7 @@ public class ProductService {
 		ProductPojo ex = getCheck(id);
 		ex.setName(p.getName());
 		ex.setBarcode(p.getBarcode());
-		ex.setBrand(p.getBrand());
-		ex.setCategory(p.getCategory());
+		ex.setMrp(p.getMrp());
 		dao.update(ex);
 	}
 
@@ -76,8 +71,6 @@ public class ProductService {
 	}
 
 	protected static void normalize(ProductPojo p) {
-		p.setBrand(StringUtil.toLowerCase(p.getBrand()));
-		p.setCategory(StringUtil.toLowerCase(p.getCategory()));
 		p.setBarcode(StringUtil.toLowerCase(p.getBarcode()));
 		p.setName(StringUtil.toLowerCase(p.getName()));
 	}

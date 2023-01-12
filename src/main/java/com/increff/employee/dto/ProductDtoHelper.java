@@ -2,8 +2,10 @@ package com.increff.employee.dto;
 
 import com.increff.employee.model.ProductData;
 import com.increff.employee.model.ProductForm;
+import com.increff.employee.pojo.BrandPojo;
 import com.increff.employee.pojo.ProductPojo;
 import com.increff.employee.service.ApiException;
+import com.increff.employee.service.BrandService;
 import com.increff.employee.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,28 +14,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDtoHelper {
-    public static List<ProductData> getAllConverter(List<ProductPojo> list) {
-        List<ProductData> list2 = new ArrayList<ProductData>();
-        for (ProductPojo p : list) {
-            list2.add(convert(p));
-        }
-        return list2;
+    @Autowired
+    private BrandService brandService;
+    public BrandPojo brandAndCatFromId(int brandAndCatid) throws ApiException {
+        return brandService.get(brandAndCatid);
     }
-    public static ProductData convert(ProductPojo p) {
+
+    public static ProductData convert(ProductPojo p,String brand,String category) {
         ProductData d = new ProductData();
         d.setBarcode(p.getBarcode());
-        d.setBrand(p.getBrand());
-        d.setCategory(p.getCategory());
+        d.setBrand(brand);
+        d.setCategory(category);
         d.setName(p.getName());
         d.setMrp(p.getMrp());
         d.setId(p.getId());
         return d;
     }
-    public static ProductPojo convert(ProductForm f) {
+    public static ProductPojo convert(ProductForm f,int brandAndCatId) {
         ProductPojo p = new ProductPojo();
         p.setBarcode(f.getBarcode());
-        p.setBrand(f.getBrand());
-        p.setCategory(f.getCategory());
+        p.setBrand_category(brandAndCatId);
         p.setName(f.getName());
         p.setMrp(f.getMrp());
         return p;
