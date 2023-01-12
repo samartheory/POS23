@@ -145,6 +145,7 @@ function displayInventoryList(data){
 		buttonHtml += ' <button onclick="displayEditInventory(' + e.id + ')">edit</button>'
 		var row = '<tr>'
 		+ '<td>' + e.id + '</td>'
+		+ '<td>' + e.barcode + '</td>'
 		+ '<td>' + e.quantity + '</td>'
 		+ '<td>' + buttonHtml + '</td>'
 		+ '</tr>';
@@ -196,6 +197,7 @@ function displayUploadData(){
 
 function displayInventory(data){
 	$("#inventory-edit-form input[name=quantity]").val(data.quantity);
+	$("#inventory-edit-form input[name=barcode]").val(data.barcode);
 	$("#inventory-edit-form input[name=id]").val(data.id);
 	$('#edit-inventory-modal').modal('toggle');
 }

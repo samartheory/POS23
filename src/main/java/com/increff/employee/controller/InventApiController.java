@@ -40,7 +40,7 @@ public class InventApiController {
 
     @ApiOperation(value = "Gets list of all Invents and cats")
     @RequestMapping(path = "/api/invent", method = RequestMethod.GET)
-    public List<InventData> getAll() {
+    public List<InventData> getAll() throws ApiException {
         return dto.getAll();
     }
 

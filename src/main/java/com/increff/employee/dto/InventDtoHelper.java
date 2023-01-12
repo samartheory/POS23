@@ -13,26 +13,21 @@ import java.util.List;
 
 
 public class InventDtoHelper {
-    public static List<InventData> getAllConverter(List<InventPojo> list) {
-        List<InventData> list2 = new ArrayList<InventData>();
-        for (InventPojo p : list) {
-            list2.add(convert(p));
-        }
-        return list2;
-    }
 
-    public static InventData convert(InventPojo p) {
+
+    public static InventData convert(InventPojo p,String barcode) {
         InventData d = new InventData();
         d.setQuantity(p.getQuantity());
         d.setId(p.getId());
+        d.setBarcode(barcode);
         return d;
     }
 
-    public static InventPojo convert(InventForm f) {
+    public static InventPojo convert(InventForm f,int id) {
         InventPojo p = new InventPojo();
         p.setQuantity(f.getQuantity());
-        p.setBarcode(f.getBarcode());
-//        p.setId(f.getId());
+//        p.setBarcode(f.getBarcode());//barcode use
+        p.setId(id);
         return p;
     }
 }

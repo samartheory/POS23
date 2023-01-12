@@ -13,6 +13,4 @@ public class InventPojo {
 	@Id
 	private int id;
 	private int quantity;
-	private String barcode;
-
 }

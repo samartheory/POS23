@@ -17,18 +17,12 @@ public class InventService {
 
 	@Autowired
 	private InventDao dao;
-	@Autowired
-	private ProductDao proDao;
+
 	@Transactional(rollbackFor = ApiException.class)
 	public void add(InventPojo p) throws ApiException {
 		if(p.getQuantity() == 0) {
 			throw new ApiException("quantity cannot be empty");
 		}
-		ProductPojo productPojo =  proDao.selectByBarcode(p.getBarcode());
-		if(Objects.isNull(productPojo)){
-			throw new ApiException("Product with given barcode doesnt exists");
-		}
-		p.setId(productPojo.getId());
 		dao.insert(p);
 	}
 	//TODO: if quantity turns 0 then delete that entry automatically

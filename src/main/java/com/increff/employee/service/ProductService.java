@@ -17,8 +17,8 @@ public class ProductService {
 
 	@Autowired
 	private ProductDao dao;
-	@Autowired
-	private BrandDao brandDao;
+//	@Autowired
+//	private BrandDao brandDao;
 	@Transactional
 	public void add(ProductPojo p) throws ApiException {
 		if(StringUtil.isEmpty(p.getBarcode()) || StringUtil.isEmpty(p.getName())) {
@@ -46,6 +46,15 @@ public class ProductService {
 			throw new ApiException("Given Barcode already exists");
 		}
 	}
+	@Transactional(readOnly = true)
+	public ProductPojo getIdByBarcode(String barcode) throws ApiException {
+		ProductPojo productPojo = dao.selectByBarcode(barcode);
+		if(Objects.isNull(productPojo)){
+			throw new ApiException("Given Barcode doesn't exists");
+		}
+		return productPojo;
+	}
+
 	@Transactional(readOnly = true)
 	public List<ProductPojo> getAll() {
 		return dao.selectAll();
