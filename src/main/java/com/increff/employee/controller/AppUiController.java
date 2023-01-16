@@ -31,5 +31,9 @@ public class AppUiController extends AbstractUiController {
 	public ModelAndView product() {
 		return mav("product.html");
 	}
+	@RequestMapping(value = "/ui/place_order/{}")
+	public ModelAndView place_order() {
+		return mav("place_order.html");
+	}
 
 }

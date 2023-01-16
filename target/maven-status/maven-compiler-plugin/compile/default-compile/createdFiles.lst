@@ -4,8 +4,10 @@ com\increff\employee\model\ProductForm.class
 com\increff\employee\dto\ProductDto.class
 com\increff\employee\util\StringUtil.class
 com\increff\employee\dao\OrderDao.class
+com\increff\employee\dto\OrderItemDtoHelper.class
 com\increff\employee\model\LoginForm.class
 com\increff\employee\service\ProductService.class
+com\increff\employee\controller\OrderItemApiController.class
 com\increff\employee\model\OrderData.class
 com\increff\employee\dao\UserDao.class
 com\increff\employee\controller\ProductApiController.class

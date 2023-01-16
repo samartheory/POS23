@@ -1,7 +1,7 @@
 package com.increff.employee.service;
 
-import com.increff.employee.dao.OrderDao;
-import com.increff.employee.pojo.OrderPojo;
+import com.increff.employee.dao.OrderItemDao;
+import com.increff.employee.pojo.OrderItemPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,20 +15,15 @@ import java.util.Objects;
 public class OrderItemService {
 
 	@Autowired
-	private OrderDao dao;
+	private OrderItemDao dao;
 
 	@Transactional(rollbackOn = ApiException.class)
-	public void add(OrderPojo p) throws ApiException {
-
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-
-		ZonedDateTime now = ZonedDateTime.now();
-
-		p.setTime(now.format(dtf));
-
+	public void add(OrderItemPojo orderItemPojo) throws ApiException {
+		if(orderItemPojo.getQuantity() == 0){
+			throw new ApiException("Quantity can't be zero");
+		}
 //		System.out.println(p.getId() + p.getBrand() + p.getCategory());
-		dao.insert(p);
-
+		dao.insert(orderItemPojo);
 	}
 
 	@Transactional
@@ -37,27 +32,27 @@ public class OrderItemService {
 	}
 
 	@Transactional(rollbackOn = ApiException.class)
-	public OrderPojo get(int id) throws ApiException {
+	public OrderItemPojo get(int id) throws ApiException {
 		return getCheck(id);
 	}
 
 	@Transactional
-	public List<OrderPojo> getAll() {
+	public List<OrderItemPojo> getAll() {
 		return dao.selectAll();
 	}
 
 	@Transactional(rollbackOn  = ApiException.class)
-	public void update(int id, OrderPojo p) throws ApiException {
+	public void update(int id, OrderItemPojo p) throws ApiException {
 //		normalize(p);
-		OrderPojo ex = getCheck(id);
+		OrderItemPojo ex = getCheck(id);
 		dao.update(ex);
 	}
 
 	@Transactional
-	public OrderPojo getCheck(int id) throws ApiException {
-		OrderPojo p = dao.select(id);
+	public OrderItemPojo getCheck(int id) throws ApiException {
+		OrderItemPojo p = dao.select(id);
 		if (Objects.isNull(p)) {
-			throw new ApiException("Order with given ID does not exit, id: " + id);
+			throw new ApiException("Order with given ID does not exist, id: " + id);
 		}
 		return p;
 	}

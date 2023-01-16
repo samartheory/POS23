@@ -1,6 +1,6 @@
 package com.increff.employee.dao;
 
-import com.increff.employee.pojo.OrderPojo;
+import com.increff.employee.pojo.OrderItemPojo;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -13,15 +13,15 @@ import java.util.List;
 @Repository
 public class OrderItemDao extends AbstractDao {
 
-	private static final String DELETE_ID = "delete from OrderPojo p where id=:id";
-	private static final String SELECT_ID = "select p from OrderPojo p where id=:id";
-	private static final String SELECT_ALL = "select p from OrderPojo p";
+	private static final String DELETE_ID = "delete from OrderItemPojo p where id=:id";
+	private static final String SELECT_ID = "select p from OrderItemPojo p where id=:id";
+	private static final String SELECT_ALL = "select p from OrderItemPojo p";
 
 	@PersistenceContext
 	private EntityManager em;
 
 	@Transactional
-	public void insert(OrderPojo p) {
+	public void insert(OrderItemPojo p) {
 		em.persist(p);
 	}
 
@@ -31,22 +31,18 @@ public class OrderItemDao extends AbstractDao {
 		return query.executeUpdate();
 	}
 
-	public OrderPojo select(int id) {
-		TypedQuery<OrderPojo> query = getQuery(SELECT_ID, OrderPojo.class);
+	public OrderItemPojo select(int id) {
+		TypedQuery<OrderItemPojo> query = getQuery(SELECT_ID, OrderItemPojo.class);
 		query.setParameter("id", id);
 		return getSingle(query);
 	}
 
-	public List<OrderPojo> selectAll() {
-
-		TypedQuery<OrderPojo> query = getQuery(SELECT_ALL, OrderPojo.class);
-		System.out.println("tillthis");
+	public List<OrderItemPojo> selectAll() {
+		TypedQuery<OrderItemPojo> query = getQuery(SELECT_ALL, OrderItemPojo.class);
 		return query.getResultList();
-
-
 	}
 
-	public void update(OrderPojo p) {
+	public void update(OrderItemPojo p) {
 	}
 
 

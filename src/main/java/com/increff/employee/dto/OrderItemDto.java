@@ -1,37 +1,47 @@
 package com.increff.employee.dto;
-import com.increff.employee.model.OrderData;
+import com.increff.employee.model.OrderItemData;
 import com.increff.employee.model.OrderItemForm;
-import com.increff.employee.pojo.OrderPojo;
+import com.increff.employee.pojo.OrderItemPojo;
+import com.increff.employee.pojo.ProductPojo;
 import com.increff.employee.service.ApiException;
-import com.increff.employee.service.OrderService;
+import com.increff.employee.service.OrderItemService;
+import com.increff.employee.service.ProductService;
+import com.increff.employee.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.increff.employee.dto.OrderDtoHelper.convert;
-import static com.increff.employee.dto.OrderDtoHelper.getAllConverter;
+import static com.increff.employee.dto.OrderItemDtoHelper.*;
 
 @Service
 public class OrderItemDto {
     @Autowired
-    private OrderService service;
-
+    private OrderItemService orderItemService;
+    @Autowired
+    private ProductService productService;
     public void add(OrderItemForm orderItemForm) throws ApiException {
-        OrderPojo p = new OrderPojo();
-        service.add(p);
+        if(StringUtil.isEmpty(orderItemForm.getBarcode())){
+            throw new ApiException("Barcode cannot be empty");
+        }
+        if(orderItemForm.getQuantity() == 0){
+            throw new ApiException("Quantity cannot be 0");
+        }
+        ProductPojo productPojo = productService.getIdByBarcode(orderItemForm.getBarcode());
+        orderItemService.add(productToOrderItem(productPojo,orderItemForm));
     }
 
     public void delete(int id) {
-        service.delete(id);
+        orderItemService.delete(id);
     }
 
-    public OrderData get(int id) throws ApiException {
-        OrderPojo p = service.get(id);
+    public OrderItemData get(int id) throws ApiException {
+        OrderItemPojo p = orderItemService.get(id);
         return convert(p);
     }
 
-    public List<OrderData> getAll() {
-        return getAllConverter(service);
+    public List<OrderItemData> getAll() {
+        return getAllConverter(orderItemService);
     }
+
 }
